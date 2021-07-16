@@ -60,3 +60,10 @@ jobs:
       with:
         name: webserver-${{ matrix.os }}-${{ matrix.arch }}
         path: ${{ matrix.output }}
+
+    - name: Create draft release if master branch
+      # if: github.ref == 'refs/heads/master'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release create arelease --title "Draft release" --draft --target "${GITHUB_SHA}" --notes "Draft release automatically made from successful master branch build" webserver*
