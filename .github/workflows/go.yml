@@ -1,0 +1,80 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: windows
+            arch: 386
+            output: webserver-windows-386.exe
+          - os: linux
+            arch: 386
+            output: webserver-linux-386
+          - os: linux
+            arch: arm
+            output: webserver-linux-arm
+          - os: linux
+            arch: arm64
+            output: webserver-linux-arm64
+          - os: darwin
+            arch: arm64
+            output: webserver-mac-darwin-arm64
+          - os: darwin
+            arch: amd64
+            output: webserver-mac-darwin-amd64
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16
+
+    - name: Go deps
+      env:
+        GOOS: ${{ matrix.os }}
+        GOARCH: ${{ matrix.arch }}
+      run: go get
+
+    - name: Go build
+      env:
+        GOOS: ${{ matrix.os }}
+        GOARCH: ${{ matrix.arch }}
+      run: |
+        go build -o ${{ matrix.output }} -v ./...
+        
+    - name: Keep artifacts if master branch
+      # if: github.ref == 'refs/heads/master'
+      uses: actions/upload-artifact@v2
+      with:
+        name: webserver-${{ matrix.os }}-${{ matrix.arch }}
+        path: ${{ matrix.output }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download all workflow run artifacts
+      uses: actions/download-artifact@v2
+    - name: Check all files
+      run: |
+        ls -l
+    - name: Create draft release if master branch
+      # if: github.ref == 'refs/heads/master'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release create arelease --title "Draft release" --draft --target "${GITHUB_SHA}" --notes "Draft release automatically made from successful master branch build" webserver*/*
+
+  
