@@ -29,4 +29,6 @@ jobs:
       env:
         GOOS: ${{ matrix.os }}
         GOARCH: ${{ matrix.arch }}
-      run: go build -o ${{ matrix.output }} -v ./...
+      run: |
+        go get
+        go build -o ${{ matrix.output }} -v ./...
