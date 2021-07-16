@@ -28,6 +28,9 @@ jobs:
           - os: darwin
             arch: arm64
             output: webserver-mac-darwin-arm64
+          - os: darwin
+            arch: amd64
+            output: webserver-mac-darwin-amd64
 
     steps:
     - uses: actions/checkout@v2
