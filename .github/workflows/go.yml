@@ -15,7 +15,7 @@ jobs:
         include:
           - os: windows
             arch: 386
-            output: webserver-windows.exe
+            output: webserver-windows-386.exe
 
     steps:
     - uses: actions/checkout@v2
@@ -32,3 +32,11 @@ jobs:
       run: |
         go get
         go build -o ${{ matrix.output }} -v ./...
+        ls -l
+        
+    - name: Keep artifacts if master branch
+      # if: github.ref == 'refs/heads/master'
+      uses: actions/upload-artifact@v2
+      with:
+        name: webserver-${{ matrix.os }}-${{ matrix.arch }}
+        path: ${{ matrix.output }}
