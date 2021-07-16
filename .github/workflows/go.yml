@@ -26,12 +26,6 @@ jobs:
             arch: arm64
             output: webserver-linux-arm64
           - os: darwin
-            arch: 386
-            output: webserver-mac-darwin-386
-          - os: darwin
-            arch: arm
-            output: webserver-mac-darwin-arm
-          - os: darwin
             arch: arm64
             output: webserver-mac-darwin-arm64
 
@@ -43,12 +37,17 @@ jobs:
       with:
         go-version: 1.16
 
-    - name: Build
+    - name: Go deps
+      env:
+        GOOS: ${{ matrix.os }}
+        GOARCH: ${{ matrix.arch }}
+      run: go get
+
+    - name: Go build
       env:
         GOOS: ${{ matrix.os }}
         GOARCH: ${{ matrix.arch }}
       run: |
-        go get
         go build -o ${{ matrix.output }} -v ./...
         ls -l
         
