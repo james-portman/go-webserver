@@ -16,6 +16,24 @@ jobs:
           - os: windows
             arch: 386
             output: webserver-windows-386.exe
+          - os: linux
+            arch: 386
+            output: webserver-linux-386
+          - os: linux
+            arch: arm
+            output: webserver-linux-arm
+          - os: linux
+            arch: arm64
+            output: webserver-linux-arm64
+          - os: darwin
+            arch: 386
+            output: webserver-mac-darwin-386
+          - os: darwin
+            arch: arm
+            output: webserver-mac-darwin-arm
+          - os: darwin
+            arch: arm64
+            output: webserver-mac-darwin-arm64
 
     steps:
     - uses: actions/checkout@v2
