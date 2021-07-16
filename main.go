@@ -34,7 +34,7 @@ func runWebserver() {
 	router := gin.Default()
 	router.Use(cors.Default()) // allow all origins
 
-	router.Use(static.Serve("/", static.LocalFile("web-static", false)))
+	router.Use(static.Serve("/", static.LocalFile("./", false)))
 
 	fmt.Println("Starting webserver at: http://localhost:8080")
 	router.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
